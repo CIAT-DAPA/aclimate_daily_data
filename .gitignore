@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# virtualenv
+venv/
+.venv/
+env/
+ENV/
+
+*.env
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# IDE files
+.idea/
+.vscode/
+
+# Editor backup files
+*~
+*.swp
+
+# Logs
+*.log
+*.log.*
+
+# Build artifacts
+build/
+dist/
+
+# Compiled Python files
+*.pyc
+
+# Database files
+*.sqlite3
+
+# Dependency directories
+# e.g. node_modules, target, vendor
+node_modules/
+target/
