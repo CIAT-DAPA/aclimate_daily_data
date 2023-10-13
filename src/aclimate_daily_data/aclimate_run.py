@@ -1,7 +1,5 @@
 import argparse
 
-from dateutil.relativedelta import relativedelta
-
 from aclimate_daily_data.data_loader import DownloadDailyData
 
 def main():
