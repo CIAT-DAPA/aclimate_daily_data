@@ -6,8 +6,8 @@ import requests
 import os
 from dotenv import load_dotenv
 import argparse
-from classes.logger import init_logger
-from classes.models import ClimaticData, DailyReading, MeasureClimatic, WeatherLinkHistoricalData, WeatherLinkSensorReading, WeatherLinkStation, WeatherStation, WeatherStationDailyData
+from aclimate_daily_data.classes.logger import init_logger
+from aclimate_daily_data.classes.models import ClimaticData, DailyReading, MeasureClimatic, WeatherLinkHistoricalData, WeatherLinkSensorReading, WeatherLinkStation, WeatherStation, WeatherStationDailyData
 from pymongo import MongoClient
 from typing import Any, List
 
