@@ -18,7 +18,7 @@ setup(
     python_requires=">=3.6",
     entry_points={
         'console_scripts': [
-            'aclimate_daily_data=aclimate_daily_data.data_loader:main',
+            'aclimate_daily_data=aclimate_daily_data.aclimate_run:main',
         ],
     },
     install_requires=[
