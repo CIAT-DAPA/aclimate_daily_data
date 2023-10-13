@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="aclimate_daily_data",
-    version='v0.0.1',
+    version='v0.0.2',
     author="christianfeil",
     author_email="h.sotelo@cgiar.com",
     description="Daily data download module",
