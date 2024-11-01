@@ -1,12 +1,12 @@
 import argparse
 
-from aclimate_daily_data.data_loader import DownloadDailyData
+from daily_weather_link_loader import DailyWeatherLinkLoader
 
 def main():
 
     parser = argparse.ArgumentParser(description="Resampling script")
     
-    dd = DownloadDailyData()
+    dd = DailyWeatherLinkLoader()
     dd.main()
 
 

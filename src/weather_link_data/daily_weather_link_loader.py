@@ -6,17 +6,17 @@ import requests
 import os
 from dotenv import load_dotenv
 import argparse
-from .classes.logger import init_logger
-from .classes.models import ClimaticData, DailyReading, MeasureClimatic, WeatherLinkHistoricalData, WeatherLinkSensorReading, WeatherLinkStation, WeatherStation, WeatherStationDailyData
+from classes.logger import init_logger
+from classes.models import ClimaticData, DailyReading, MeasureClimatic, WeatherLinkHistoricalData, WeatherLinkSensorReading, WeatherLinkStation, WeatherStation, WeatherStationDailyData
 from pymongo import MongoClient
 from typing import Any, List
 
-class DownloadDailyData():
+class DailyWeatherLinkLoader():
 
     def __init__(self):
         self.logger = init_logger()
         self.today = datetime.now(timezone.utc).date()
-        print("running data_loader: " + str(self.today))
+        print("running daily_weather_link_loader: " + str(self.today))
         load_dotenv()
 
         self.WeatherLink_API_KEY = self.get_env_var("WeatherLink_API_KEY")
@@ -64,7 +64,7 @@ class DownloadDailyData():
         timestamp_seconds = int(noon_utc.timestamp())
 
         url = f'https://api.weatherlink.com/v2/historic/{stationId}'
-        params = {
+        params:dict[str,Any] = {
             'api-key': self.WeatherLink_API_KEY,
             'start-timestamp': timestamp_seconds - (24 * 60 * 60),  # last 24 hours
             'end-timestamp': timestamp_seconds
@@ -168,7 +168,7 @@ class DownloadDailyData():
         current_month = self.today.month  # For example, September
 
         # Check if a document exists for the current month and weather station
-        query_filter = {
+        query_filter:dict[str,Any] = {
             "year": current_year,
             "month": current_month,
             "weather_station": weather_station_id,
@@ -180,7 +180,7 @@ class DownloadDailyData():
             
             data = [climatic_data.model_dump() for climatic_data in daily_reading.data]
 
-            update_query = {
+            update_query:dict[str,Any] = {
                 "_id": existing_document["_id"],
                 "daily_readings.day": daily_reading.day,
             }
@@ -211,6 +211,7 @@ class DownloadDailyData():
 
 
     def get_weather_stations(self, external_prefix: str):
+        result: List[WeatherStation] = []
         try:
             client: MongoClient[Any] = MongoClient(self.MONGODB_URI)
             db = client[self.DATABASE_NAME]
@@ -218,25 +219,25 @@ class DownloadDailyData():
             weather_station_collection = db['lc_weather_station']
 
             # Check if a document exists for weather station
-            query_filter = {
+            query_filter:dict[str,Any] = {
                 "ext_id":  {"$regex": "^"+self.COUNTRY_PREFIX},
                 "origin": "WEATHERLINK"
             }
 
             documents = weather_station_collection.find(query_filter)
 
-            result: List[WeatherStation] = []
+           
 
             # Iterate over the cursor and convert each document to a WeatherStation
             for document in documents:
                 weather_station = WeatherStation.model_validate(document)
                 result.append(weather_station)
 
-            return result
+           
         except requests.exceptions.RequestException as e:
             self.logger.error(
                 f"Error loading WeatherStations for {external_prefix}: {str(e)}")
-            return None
+        return result
 
 
     def parse_arguments(self):
@@ -270,9 +271,8 @@ class DownloadDailyData():
         self.logger.info(f"Start loading weather data")
         # weather_link_stations = load_weather_link_stations()
         weather_stations = self.get_weather_stations(external_prefix=self.COUNTRY_PREFIX)
-        if (weather_stations is None):
-            return
-
+        self.logger.info(f"Weather stations found: {len(weather_stations)} ")
+       
         count = 0
         for weather_station in weather_stations:
             external_id = self.extract_external_station_id(weather_station.ext_id)
