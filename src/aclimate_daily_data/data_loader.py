@@ -9,7 +9,7 @@ import argparse
 from .classes.logger import init_logger
 from .classes.models import ClimaticData, DailyReading, MeasureClimatic, WeatherLinkHistoricalData, WeatherLinkSensorReading, WeatherLinkStation, WeatherStation, WeatherStationDailyData
 from pymongo import MongoClient
-from typing import Any, List
+from typing import Any, List, Optional
 
 class DownloadDailyData():
 
@@ -55,10 +55,13 @@ class DownloadDailyData():
             return []
 
 
-    def load_weather_link_data(self, stationId: int):
+    def load_weather_link_data(self, stationId: int, date: Optional[datetime] = None):
+
+        if date is None:
+            date = self.today
 
         # Set time to 12:00:00 UTC
-        noon_utc = datetime.combine(self.today, time(hour=12, tzinfo=timezone.utc))
+        noon_utc = datetime.combine(date, time(hour=12, tzinfo=timezone.utc))
 
         # Convert to timestamp in seconds since the epoch
         timestamp_seconds = int(noon_utc.timestamp())

@@ -12,6 +12,8 @@ class WeatherLinkStation(BaseModel):
     station_id: int
     latitude: float
     longitude: float
+    registered_date: Optional[int] = None
+    subscription_end_date: Optional[int] = None
 
     class Config:
         extra = "allow"
